@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SimpleOrder</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="main-page">
+    <div class="header">
+        <div class="container">
+            <div class="header-box">
+                <div class="burger">
+                    <img src="./img/burger.svg" alt="">
+                </div>
+                <div class="logo">
+                    <img src="./img/logo.svg" alt="">
+                </div>
+                <div class="basket">
+                    <img src="./img/basket.svg" alt="">
+                    <div class="count" id="count">
+                        0
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="carousel-main">
+            <div class="owl-carousel owl-theme">
+                <div class="item ">
+                    <img src="./img/action1.png" alt="">
+                </div>
+                <div class="item">
+                    <img src="./img/action2.png" alt="">
+                </div>
+                <div class="item ">
+                    <img src="./img/action1.png" alt="">
+                </div>
+                <div class="item">
+                    <img src="./img/action2.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="output-box">
+            <div class="head">
+                <div class="icon">
+                    <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.6786 17.7518C23.7883 13.5358 23.4346 7.56683 19.6176 3.7497C15.4162 -0.451723 8.58379 -0.451723 4.38248 3.7497C0.565408 7.56683 0.211763 13.5358 3.32143 17.7518L11.5141 29.146C11.7529 29.4781 12.2472 29.4781 12.486 29.146L20.6786 17.7518Z" fill="#FFA800"/>
+                        <path d="M12 19.7458C16.6275 19.7458 20.3788 15.9945 20.3788 11.367C20.3788 6.73953 16.6275 2.98822 12 2.98822C7.37254 2.98822 3.62123 6.73953 3.62123 11.367C3.62123 15.9945 7.37254 19.7458 12 19.7458Z" fill="white"/>
+                        <path d="M12 2.38981C7.04994 2.38981 3.02274 6.41701 3.02274 11.3671C3.02274 16.3171 7.04994 20.3443 12 20.3443C16.9501 20.3443 20.9773 16.3171 20.9773 11.3671C20.9773 6.41701 16.9501 2.38981 12 2.38981ZM12 19.1474C7.70989 19.1474 4.21971 15.6572 4.21971 11.3671C4.21971 7.07696 7.70989 3.58678 12 3.58678C16.2901 3.58678 19.7803 7.07696 19.7803 11.3671C19.7803 15.6572 16.2901 19.1474 12 19.1474ZM14.8716 0.363041C14.1135 0.166498 13.8131 1.32528 14.5712 1.52183C18.9405 2.66374 22.1742 6.64486 22.1742 11.367C22.1742 13.6207 21.4377 15.7056 20.1926 17.3936L12 28.7967L3.80741 17.3937C2.56238 15.7057 1.82577 13.6208 1.82577 11.3671C1.82577 6.60727 5.11127 2.60036 9.53353 1.49513C10.2659 1.31325 9.97737 0.151417 9.245 0.333296C4.30164 1.56797 0.628799 6.04667 0.628799 11.3671C0.628799 13.8854 1.45172 16.2152 2.84277 18.1016L11.0281 29.4951C11.5309 30.1595 12.4634 30.1769 12.9719 29.4958L21.1601 18.0978C22.5494 16.2121 23.3712 13.8837 23.3712 11.367C23.3712 6.08856 19.756 1.63859 14.8716 0.363041ZM12.0575 1.19697C12.388 1.19697 12.6559 0.929028 12.6559 0.598485C12.6559 0.267942 12.388 0 12.0575 0C11.7269 0 11.459 0.267942 11.459 0.598485C11.459 0.929028 11.7269 1.19697 12.0575 1.19697Z" fill="black"/>
+                    </svg>
+                </div>
+                <div class="text">
+                    Nearest places
+                </div>
+            </div>
+            <div class="box" id="databox">
+            </div>
+            <div class="showall" id="showall">
+                All places
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="./js/jquery.min.js"></script>
+<script src="./js/owl.carousel.min.js"></script>
+<script>
+    $('.owl-carousel').owlCarousel({
+        loop:true,
+        margin:10,
+        nav:false,
+        dots: true,
+        responsive:{
+            0:{
+                items:2
+            },
+            600:{
+                items:3
+            },
+            1000:{
+                items:4
+            }
+        }
+    });
+    $(function () {
+        let databox = $('#databox');
+        let dataSearch;
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 10,
+            maximumAge: 0
+        };
+
+        var latitude;
+        var longitude;
+        function success(pos) {
+            var crd = pos.coords;
+            latitude = crd.latitude.toFixed(4);
+            longitude = crd.longitude.toFixed(4);
+        }
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+        navigator.geolocation.getCurrentPosition(success, error);
+        getData();
+
+        $('#showall').on('click', function () {
+            $("#databox").css('height','auto');
+            $(this).hide();
+        });
+        $(document).on('click', '.item-rest', function () {
+            console.log();
+            localStorage.setItem('restaurant', JSON.stringify(dataSearch[$(this).data('index')]));
+            window.location = 'restaurant.html';
+        });
+        function getData(lat,long) {
+            $.ajax({
+                // url: `https://maps.googleapis.com/maps/api/place/textsearch/json?location=${lat},${long}&radius=5000&query=restaurants&key=AIzaSyDKDV6UecRT-WeINAfhD3FGaRfPLmueZHU`,
+                type: "GET",
+                url: 'data.json',
+                success: function(data){
+                    dataSearch = data.results;
+                    console.log(dataSearch);
+                    databox.empty();
+                    dataSearch.forEach((item, index) => {
+                        let dayItem = $(`
+                        <div class='item item-rest' data-index="${index}">
+                            <div class="info">
+                                <div class="name">
+                                    ${item.name}
+                                </div>
+                                <div class="raiting">
+                                    <div class="number">
+                                        ${item.rating}
+                                    </div>
+                                    <div class="icon-star">
+                                        <img src="./img/star.png" alt="">
+                                    </div>
+                                    <div class="count">
+                                        (${item.user_ratings_total})
+                                    </div>
+                                    <div class="money">
+                                        $$$
+                                    </div>
+                                    </div>
+                                    <div class="address">
+                                        ${item.formatted_address}
+                                    </div>
+                                </div>
+                                <div class="img">
+<!--                                    <img src="${item.icon}" alt="">-->
+                                </div>
+                            </div>
+                        </div>`);
+                        databox.append(dayItem);
+                    })
+                }
+            });
+        }
+    })
+
+
+    let menu = [
+        {
+            name: 'Sushi',
+            items: [
+                {
+                    name: 'Avocado roll',
+                    description: 'Combine with additional sushi and/or salad for a complete meal.',
+                    price: 12,
+                    value: 350
+                },
+                {
+                    name: 'Salmon & Avocado Roll',
+                    description: 'Combine with additional sushi and/or salad for a complete meal.',
+                    price: 7,
+                    value: 350
+                },
+                {
+                    name: 'Avocado roll',
+                    description: 'Combine with additional sushi and/or salad for a complete meal.',
+                    price: 4,
+                    value: 350
+                },
+                {
+                    name: 'Avocado roll',
+                    description: 'Combine with additional sushi and/or salad for a complete meal.',
+                    price: 8,
+                    value: 350
+                },
+            ]
+        },
+        {
+            name: 'Salads',
+            items: [
+                {
+                    name: 'Tavern',
+                    description: 'Mixed field greens, cherry tomatoes, cucumbers and red onion with our creamy Stilton dressing.',
+                    price: 11,
+                    value: 350
+                },
+                {
+                    name: 'Watercress',
+                    description: 'English cheddar, cherry tomatoes, pork belly croutons, Swarmbustin’ black honey and apple vinaigrette.',
+                    price: 14,
+                    value: 350
+                },
+                {
+                    name: 'Caesar',
+                    description: 'Fresh chopped hearts of Romaine, garlic parmesan croutons, grated Pecorino Romano and our own Caesar dressing.',
+                    price: 8,
+                    value: 350
+                },
+                {
+                    name: 'Wedge Salad',
+                    description: 'Combine with additional sushi and/or salad for a complete meal.',
+                    price: 10,
+                    value: 350
+                },
+            ]
+        },
+        {
+            name: 'Sandwiches',
+            items: [
+                {
+                    name: 'The Black Mack',
+                    description: 'Two quarter-pound patties of local Black Angus beef, Russian dressing, shredded lettuce, diced onions, American cheese and sliced pickles on ciabatta bread with chips.',
+                    price: 16,
+                    value: 350
+                },
+                {
+                    name: 'Vegetarian Burger',
+                    description: 'Black-eyed peas, sticky rice, roasted garlic, onions, celery and red pepper with a vegan basil garlic aioli on a gluten free roll.  With a side salad.',
+                    price: 12,
+                    value: 350
+                },
+                {
+                    name: 'Beef Burger',
+                    description: '8 oz. local Black Angus beef served on a brioche roll with lettuce, tomato and onion. With chips.',
+                    price: 18,
+                    value: 350
+                },
+                {
+                    name: 'Beef on Weck',
+                    description: 'Thinly sliced locally raised grass fed beef on a Kummelweck roll served with a side of fresh horseradish, au jus and chips.',
+                    price: 14,
+                    value: 350
+                },
+            ]
+        },
+        {
+            name: 'Rise',
+            items: [
+                {
+                    name: 'Shrimp Stir-Fried Noodles',
+                    description: 'Stir-fried noodles with shrimp and vegetables.',
+                    price: 10,
+                    value: 350
+                },
+                {
+                    name: 'House Special Fried Rice',
+                    description: 'Fried rice with chicken, shrimp, pork, bean sprouts, onions, egg, and soy sauce.',
+                    price: 12,
+                    value: 350
+                },
+                {
+                    name: 'Shredded Chicken Fried Rice',
+                    description: 'Fried rice with shredded chicken and vegetables.',
+                    price: 8,
+                    value: 350
+                },
+                {
+                    name: 'Beef Stir-Fried Noodles',
+                    description: 'Stir-fried noodles with shrimp and vegetables.',
+                    price: 14,
+                    value: 350
+                },
+            ]
+        }
+    ]
+
+    localStorage.setItem('menu', JSON.stringify(menu))
+
+
+</script>
+</html>

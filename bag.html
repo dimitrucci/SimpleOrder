@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SimpleOrder</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="main-page" id="showres">
+    <div class="header">
+        <div class="container">
+            <div class="header-box">
+                <a href="restaurant.html" class="burger" >
+                    <img src="./img/burger.svg" alt="">
+                </a>
+                <div class="logo">
+                    <img src="./img/logo.svg" alt="">
+                </div>
+                <div class="basket">
+                    <img src="./img/basket.svg" alt="">
+                    <div class="count" id="count">
+                        0
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="empty-bag">
+            <div class="text">
+                Your basket is empty
+            </div>
+        </div>
+        <div class="orders">
+            <div class="text">
+                You have confirmed <a href="orders.html">Orders</a>
+            </div>
+        </div>
+        <div class="bagBox showBag">
+            <div class="bag-header">
+                Bag
+            </div>
+            <div class="bag-box" id="bagBox">
+            </div>
+            <div class="bottom-panel">
+                <div class="left" id="total">
+                </div>
+                <div class="right" id="order">
+                    Order
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="./js/jquery.min.js"></script>
+<script>
+    $(function () {
+        let totalsum = 0;
+        let total = $('#total');
+        let countBasket = $('#count');
+        let empty = $('.empty-bag');
+        let bagBox = $('#bagBox');
+        let showBag = $('.showBag');
+        let itemBox = $('#itemBox');
+        let restaurant = JSON.parse(localStorage.getItem('restaurant'));
+        let menu = JSON.parse(localStorage.getItem('menu'));
+        function countBasketF(data) {
+            countBasket.text(data.length);
+        }
+
+        let basketlocal;
+        if (localStorage.getItem('basket')) {
+            basketlocal = JSON.parse(localStorage.getItem('basket'));
+            countBasketF(basketlocal);
+            showBag.show();
+            bagBox.empty();
+            bagBox.addClass('active')
+            sumBasket(basketlocal);
+            basketlocal.forEach((item, index) => {
+                insertBasketItems(item, index)
+            })
+        } else {
+            basketlocal = [];
+            empty.show();
+        }
+        if (basketlocal.length === 0) {
+            empty.show();
+            showBag.hide();
+        }
+
+        $(document).on('click','.plus', function () {
+            let dataCount = $(this).parent().find('.count-i').attr('data-count');
+            dataCount++;
+            $(this).parent().find('.count-i').text(dataCount);
+            $(this).parent().find('.count-i').attr('data-count', dataCount);
+            basketlocal[$(this).parent().find('.count-i').attr('data-index')].count = dataCount;
+            updateBasket(basketlocal);
+            sumBasket(basketlocal)
+        });
+
+        $(document).on('click','.minus', function () {
+            let dataCount = $(this).parent().find('.count-i').attr('data-count');
+            if (dataCount === 1 || dataCount<=1) {
+                return;
+            } else {
+                dataCount--;
+                $(this).parent().find('.count-i').text(dataCount);
+                $(this).parent().find('.count-i').attr('data-count', dataCount);
+                basketlocal[$(this).parent().find('.count-i').attr('data-index')].count = dataCount;
+                updateBasket(basketlocal);
+                sumBasket(basketlocal)
+            }
+        });
+
+        function updateBasket(data) {
+            localStorage.setItem('basket', JSON.stringify(data))
+        }
+
+        $(document).on('click','.addcomment', function () {
+            $(this).parent().addClass('active');
+        });
+        $(document).on('click','.add-com', function () {
+            $(this).parent().removeClass('active');
+            let text = $(this).parent().find('textarea').val();
+            $(this).parent().find('.comment-text').text(`"${text}"`);
+            basketlocal[$(this).attr('data-id')].comment = `"${text}"`;
+            updateBasket(basketlocal);
+        });
+
+
+        $(document).on('click','.remove', function () {
+            bagBox.empty();
+            basketlocal.splice($(this).attr('data-remove'), 1);
+            if(basketlocal.length === 0) {
+                showBag.hide();
+                empty.show();
+            }
+            basketlocal.forEach((item, index) => {
+                insertBasketItems(item, index)
+            });
+            updateBasket(basketlocal);
+            sumBasket(basketlocal);
+            countBasketF(basketlocal);
+        });
+
+
+        function sumBasket(basketlocal) {
+            totalsum = 0;
+            basketlocal.forEach((item, index) => {
+                totalsum += menu[item.mainId].items[item.secondId].price * item.count;
+            });
+            total.text(totalsum +' $');
+        }
+        let orders;
+        $('#order').on('click', function () {
+            if (localStorage.getItem('order')) {
+                orders = localStorage.getItem('order');
+            } else {
+                orders = [];
+            }
+            orders.push(basketlocal);
+            console.log(orders);
+            localStorage.removeItem('basket');
+            localStorage.setItem('order', JSON.stringify(orders))
+        });
+
+        function insertBasketItems(item, index) {
+            let itemsa = $(`
+            <div class="bag-item">
+                    <div class="top">
+                        <div class="img">
+                            <img src="./img/sushi.png" alt="">
+                        </div>
+                        <div class="info">
+                        <div class="remove" data-remove="${index}"></div>
+                            <div class="name">
+                                ${menu[item.mainId].items[item.secondId].name}
+                            </div>
+                            <div class="description">
+                                ${menu[item.mainId].items[item.secondId].description}
+                            </div>
+                            <div class="count">
+                                <div class="minus"></div>
+                                <div class="count-i" data-count="${item.count}" data-index="${index}">${item.count}</div>
+                                <div class="plus"></div>
+                            </div>
+                            <div class="info-value">
+                                <div class="gram">
+                                    ${menu[item.mainId].items[item.secondId].value} g
+                                </div>
+                                <div class="price">
+                                    ${menu[item.mainId].items[item.secondId].price} $
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment">
+                        <div class="comment-text">
+                            ${item.comment}
+                        </div>
+                        <div class="text-area">
+                            <textarea name="comment" placeholder="comment"></textarea>
+                        </div>
+                        <div class="addcomment" data-id=${index}>
+                            Add a comment
+                        </div>
+                        <div class="add-com" data-id=${index}>
+                            Add
+                        </div>
+                    </div>
+                </div>
+
+`);
+            bagBox.append(itemsa);
+        }
+
+    })
+</script>
+</html>
