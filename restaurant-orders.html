@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SimpleOrder</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="main-page" id="showres">
+    <div class="header">
+        <div class="container">
+            <div class="header-box">
+                <a href="restaurant.html" class="burger" >
+                    <img src="./img/burger.svg" alt="">
+                </a>
+                <div class="logo">
+                    <img src="./img/logo.svg" alt="">
+                </div>
+                <div class="home" style="height: 27px">
+                    <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0)">
+                            <path d="M26.325 11.691C26.3242 11.6904 26.3235 11.6895 26.3229 11.6889L15.309 0.675455C14.8396 0.205788 14.2154 -0.0527344 13.5515 -0.0527344C12.8876 -0.0527344 12.2634 0.205788 11.7937 0.675455L0.785628 11.6834C0.78192 11.6871 0.778006 11.691 0.774504 11.6947C-0.189548 12.6643 -0.1879 14.2375 0.779242 15.2046C1.2211 15.6467 1.80447 15.9025 2.42843 15.9295C2.45397 15.932 2.47952 15.9332 2.50527 15.9332H2.94403V24.0383C2.94403 25.6423 4.24921 26.9473 5.85329 26.9473H10.1623C10.5992 26.9473 10.9533 26.593 10.9533 26.1563V19.8018C10.9533 19.0699 11.5488 18.4746 12.2807 18.4746H14.8223C15.5542 18.4746 16.1495 19.0699 16.1495 19.8018V26.1563C16.1495 26.593 16.5036 26.9473 16.9405 26.9473H21.2495C22.8538 26.9473 24.1587 25.6423 24.1587 24.0383V15.9332H24.5658C25.2295 15.9332 25.8537 15.6747 26.3235 15.2048C27.2917 14.2362 27.2921 12.6602 26.325 11.691ZM25.2048 14.0863C25.034 14.2571 24.807 14.3512 24.5658 14.3512H23.3677C22.9308 14.3512 22.5767 14.7053 22.5767 15.1422V24.0383C22.5767 24.77 21.9814 25.3653 21.2495 25.3653H17.7315V19.8018C17.7315 18.1977 16.4265 16.8925 14.8223 16.8925H12.2807C10.6764 16.8925 9.37125 18.1977 9.37125 19.8018V25.3653H5.85329C5.1216 25.3653 4.52607 24.77 4.52607 24.0383V15.1422C4.52607 14.7053 4.17196 14.3512 3.73505 14.3512H2.55759C2.54523 14.3504 2.53308 14.3498 2.52051 14.3495C2.28485 14.3454 2.06382 14.2519 1.8982 14.0861C1.54595 13.7338 1.54595 13.1605 1.8982 12.8081C1.89841 12.8081 1.89841 12.8079 1.89861 12.8077L1.89923 12.8071L12.9127 1.794C13.0833 1.62323 13.3101 1.5293 13.5515 1.5293C13.7927 1.5293 14.0195 1.62323 14.1903 1.794L25.2013 12.8048C25.2029 12.8064 25.2048 12.8081 25.2064 12.8097C25.5568 13.1626 25.5562 13.7347 25.2048 14.0863Z" fill="#464646"/>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0">
+                                <rect width="27" height="27" fill="white"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="count-orders">
+            <div class="count" id="count">
+                0
+            </div>
+            Orders
+        </div>
+    </div>
+    <div class="container">
+        <div class="empty-bag">
+            <div class="text">
+                Your doesn't have orders
+            </div>
+        </div>
+        <div class="r-orders-box showBag" id="r-orders">
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="./js/jquery.min.js"></script>
+<script>
+    $(function () {
+        let countBasket = $('#count');
+        let empty = $('.empty-bag');
+        let bagBox = $('#bagBox');
+        let showBag = $('.showBag');
+        let contentForOrders = $('#r-orders');
+        let orderlocal = JSON.parse(localStorage.getItem('order'));
+        let menu = JSON.parse(localStorage.getItem('menu'));
+        function countBasketF(data) {
+            if(data && data.length> 0) {
+                countBasket.text(data.length);
+            }
+        }
+
+        countBasketF(orderlocal);
+
+        if (localStorage.getItem('order')) {
+            orderlocal = JSON.parse(localStorage.getItem('order'));
+            showBag.show();
+            bagBox.empty();
+            refresh();
+        } else {
+            orderlocal = [];
+            empty.show();
+        }
+
+        $(document).on('click', '.bottom-panel', function () {
+            let status = $(this).attr('data-status');
+            if (status === '2') {
+                orderlocal.splice($(this).attr('data-id'), 1);
+            }
+            if ($(this).attr('data-status') === "0") {
+                orderlocal[$(this).attr('data-id')].status_coock = 1;
+                orderlocal[$(this).attr('data-id')].status = 'Cooking';
+            }
+            if ($(this).attr('data-status') === "1") {
+                orderlocal[$(this).attr('data-id')].status_coock = 2;
+                orderlocal[$(this).attr('data-id')].status = 'Done';
+            }
+            localStorage.setItem('order', JSON.stringify(orderlocal));
+            refresh();
+            countBasketF(orderlocal);
+
+        });
+
+
+        function refresh() {
+            contentForOrders.empty();
+            orderlocal.forEach((item, index) => {
+                let sum = 0;
+                let itemsa;
+                item.order.forEach((pric, inde) => {
+                    sum += menu[pric.mainId].items[pric.secondId].price * pric.count;
+                    itemsa = $(`
+                    <div class="content-item">
+                        <div class="img">
+                            <img src="./img/sushi.png" alt="">
+                        </div>
+                        <div class="info">
+                            <div class="name">
+                                ${menu[pric.mainId].items[pric.secondId].name}
+                            </div>
+                            <div class="description">
+                                ${menu[pric.mainId].items[pric.secondId].description}
+                            </div>
+                            <div class="count">
+                                <div class="gram">
+                                    ${menu[pric.mainId].items[pric.secondId].value} g
+                                </div>
+                                <div class="count-item">
+                                    ${pric.count} x
+                                </div>
+                                <div class="price">
+                                    ${menu[pric.mainId].items[pric.secondId].price} $
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comment">
+                            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae, quisquam?"
+                        </div>
+                    </div>
+
+                `);
+                    $('#item-0').append(itemsa);
+                });
+                let status_text;
+                if (item.status_coock === 0) {
+                    status_text = 'Take Order';
+                }
+                if (item.status_coock === 1) {
+                    status_text = 'Done';
+                }
+                if (item.status_coock === 2) {
+                    status_text = 'Closed';
+                }
+                console.log(status_text)
+                let itemCreate = $(`
+                <div class="item">
+                <div class="header">
+                   <div class="price" id="price-${index}">
+                       ${sum} $
+                   </div>
+                    <div class="name">
+                        Order ${index+1}
+                    </div>
+                    <div class="empty">
+                        empty
+                    </div>
+                </div>
+                <div class="content" id="item-${index}">
+                </div>
+                <div class="bottom-panel" data-status="${item.status_coock}" data-id="${index}">
+                    ${status_text}
+                </div>
+            </div>`);
+                contentForOrders.append(itemCreate).find(`#item-${index}`).append(itemsa);
+            })
+        }
+        if (orderlocal.length === 0) {
+            empty.show();
+            showBag.hide();
+        }
+        $(document).on("click", "#item-0", "#item-1", function () {
+        });
+    })
+</script>
+</html>

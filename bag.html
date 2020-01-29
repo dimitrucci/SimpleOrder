@@ -34,7 +34,7 @@
                 Your basket is empty
             </div>
         </div>
-        <div class="orders">
+        <div class="orders-box">
             <div class="text">
                 You have confirmed <a href="orders.html">Orders</a>
             </div>
@@ -69,6 +69,8 @@
         let itemBox = $('#itemBox');
         let restaurant = JSON.parse(localStorage.getItem('restaurant'));
         let menu = JSON.parse(localStorage.getItem('menu'));
+
+        let orders = localStorage.getItem('order');
         function countBasketF(data) {
             countBasket.text(data.length);
         }
@@ -79,7 +81,7 @@
             countBasketF(basketlocal);
             showBag.show();
             bagBox.empty();
-            bagBox.addClass('active')
+            bagBox.addClass('active');
             sumBasket(basketlocal);
             basketlocal.forEach((item, index) => {
                 insertBasketItems(item, index)
@@ -91,6 +93,12 @@
         if (basketlocal.length === 0) {
             empty.show();
             showBag.hide();
+        }
+
+        if (orders && orders.length>0) {
+            $('.orders-box').show();
+        } else {
+            $('.orders-box').hide();
         }
 
         $(document).on('click','.plus', function () {
@@ -156,17 +164,23 @@
             });
             total.text(totalsum +' $');
         }
-        let orders;
         $('#order').on('click', function () {
             if (localStorage.getItem('order')) {
-                orders = localStorage.getItem('order');
+                orders = JSON.parse(localStorage.getItem('order'));
             } else {
                 orders = [];
             }
-            orders.push(basketlocal);
-            console.log(orders);
+            let obj = {
+                status: 'Waiting',
+                status_coock: 0,
+                order: basketlocal
+            };
+            orders.push(obj);
             localStorage.removeItem('basket');
-            localStorage.setItem('order', JSON.stringify(orders))
+            localStorage.setItem('order', JSON.stringify(orders));
+            empty.show();
+            showBag.hide();
+            $('.orders-box').show();
         });
 
         function insertBasketItems(item, index) {

@@ -36,16 +36,12 @@
         </div>
         <div class="bagBox showBag">
             <div class="bag-header">
-                Bag
+                order
             </div>
             <div class="bag-box" id="bagBox">
             </div>
-            <div class="bottom-panel">
-                <div class="left" id="total">
-                </div>
-                <div class="right">
-                    Order
-                </div>
+            <div class="bottom-panel big" id="bottom-panel">
+
             </div>
         </div>
     </div>
@@ -63,102 +59,47 @@
         let showBag = $('.showBag');
         let itemBox = $('#itemBox');
         let restaurant = JSON.parse(localStorage.getItem('restaurant'));
+        let basketlocal = JSON.parse(localStorage.getItem('basket'));
         let menu = JSON.parse(localStorage.getItem('menu'));
         function countBasketF(data) {
-            countBasket.text(data.length);
+            if(data && data.length> 0) {
+                countBasket.text(data.length);
+            }
         }
+        countBasketF(basketlocal);
 
-        let basketlocal;
-        if (localStorage.getItem('basket')) {
-            basketlocal = JSON.parse(localStorage.getItem('basket'));
-            countBasketF(basketlocal);
+        let orderlocal;
+        if (localStorage.getItem('order')) {
+            orderlocal = JSON.parse(localStorage.getItem('order'));
             showBag.show();
             bagBox.empty();
-            sumBasket(basketlocal);
-            basketlocal.forEach((item, index) => {
+            orderlocal.forEach((item, index) => {
                 insertBasketItems(item, index)
             })
         } else {
-            basketlocal = [];
+            orderlocal = [];
             empty.show();
         }
-        if (basketlocal.length === 0) {
+        if (orderlocal.length === 0) {
             empty.show();
             showBag.hide();
         }
 
-        $(document).on('click','.plus', function () {
-            let dataCount = $(this).parent().find('.count-i').attr('data-count');
-            dataCount++;
-            $(this).parent().find('.count-i').text(dataCount);
-            $(this).parent().find('.count-i').attr('data-count', dataCount);
-            basketlocal[$(this).parent().find('.count-i').attr('data-index')].count = dataCount;
-            updateBasket(basketlocal);
-            sumBasket(basketlocal)
-        });
-
-        $(document).on('click','.minus', function () {
-            let dataCount = $(this).parent().find('.count-i').attr('data-count');
-            if (dataCount === 1 || dataCount<=1) {
-                return;
-            } else {
-                dataCount--;
-                $(this).parent().find('.count-i').text(dataCount);
-                $(this).parent().find('.count-i').attr('data-count', dataCount);
-                basketlocal[$(this).parent().find('.count-i').attr('data-index')].count = dataCount;
-                updateBasket(basketlocal);
-                sumBasket(basketlocal)
-            }
-        });
-
-        function updateBasket(data) {
-            localStorage.setItem('basket', JSON.stringify(data))
-        }
-
-        $(document).on('click','.addcomment', function () {
-            $(this).parent().addClass('active');
-        });
-        $(document).on('click','.add-com', function () {
-            $(this).parent().removeClass('active');
-            let text = $(this).parent().find('textarea').val();
-            $(this).parent().find('.comment-text').text(`"${text}"`);
-            basketlocal[$(this).attr('data-id')].comment = `"${text}"`;
-            updateBasket(basketlocal);
-        });
-
-
-        $(document).on('click','.remove', function () {
-            bagBox.empty();
-            basketlocal.splice($(this).attr('data-remove'), 1);
-            if(basketlocal.length === 0) {
-                showBag.hide();
-                empty.show();
-            }
-            basketlocal.forEach((item, index) => {
-                insertBasketItems(item, index)
-            });
-            updateBasket(basketlocal);
-            sumBasket(basketlocal);
-            countBasketF(basketlocal);
-        });
-
-        function sumBasket(basketlocal) {
-            totalsum = 0;
-            basketlocal.forEach((item, index) => {
-                totalsum += menu[item.mainId].items[item.secondId].price * item.count;
-            });
-            total.text(totalsum +' $');
-        }
-
-        function insertBasketItems(item, index) {
-            let itemsa = $(`
+        function insertBasketItems(i) {
+            $('#bottom-panel').empty();
+            let status = $(`
+            <div class="right">
+            ${i.status}
+                </div>`)
+            $('#bottom-panel').append(status);
+            i.order.forEach((item, index) => {
+                let itemsa = $(`
             <div class="bag-item">
                     <div class="top">
                         <div class="img">
                             <img src="./img/sushi.png" alt="">
                         </div>
                         <div class="info">
-                        <div class="remove" data-remove="${index}"></div>
                             <div class="name">
                                 ${menu[item.mainId].items[item.secondId].name}
                             </div>
@@ -184,22 +125,13 @@
                         <div class="comment-text">
                             ${item.comment}
                         </div>
-                        <div class="text-area">
-                            <textarea name="comment" placeholder="comment"></textarea>
-                        </div>
-                        <div class="addcomment" data-id=${index}>
-                            Add a comment
-                        </div>
-                        <div class="add-com" data-id=${index}>
-                            Add
-                        </div>
                     </div>
                 </div>
 
 `);
-            bagBox.append(itemsa);
+                bagBox.append(itemsa);
+            })
         }
-
     })
 </script>
 </html>

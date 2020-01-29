@@ -42,6 +42,7 @@ a{
   position: relative;
   background: transparent;
   z-index: 0;
+  min-height: 100vh;
   .logo{
     width: 100%;
     max-width: 288px;
@@ -671,7 +672,23 @@ a{
     justify-content: center;
     width: 100%;
     color: #1C1C1C;
-    font-size: 14px;
+    font-size: 16px;
+  }
+}
+.orders-box{
+  display: none;
+  margin-top: 10px;
+  .text{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    color: #1C1C1C;
+    font-size: 16px;
+    a{
+      color: #FFA800;
+      text-decoration: underline;
+      margin-left: 10px;
+    }
   }
 }
 .bagBox{
@@ -697,6 +714,7 @@ a{
     padding: 10px 10px 20px;
     margin-bottom: 20px;
     border-bottom: 1px solid #cbcbcb;
+    width: 100%;
     &:nth-last-of-type(1){
       border-bottom: none;
       margin-bottom: 0;
@@ -840,6 +858,16 @@ a{
   }
   .bottom-panel{
     display: flex;
+    &.big{
+      width: 100%;
+      border-radius: 0 0 15px 15px;
+      background: #FF7A00;
+      .right{
+        width: 100%;
+        background: transparent;
+      }
+
+    }
     .left{
       display: flex;
       align-items: center;
@@ -1035,6 +1063,119 @@ a{
         border-radius: 0 0 15px 0;
         cursor: pointer;
       }
+    }
+  }
+}
+
+.count-orders{
+  background: #FFA800;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 15px;
+  padding: 15px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  .count{
+    font-weight: bold;
+    margin-right: 5px;
+  }
+}
+
+.r-orders-box{
+  .item{
+    background: #FFFFFF;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    .header{
+      background: #FFA800;
+      padding: 15px 10px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .empty{
+        color: transparent;
+      }
+    }
+    .content{
+      display: flex;
+      flex-direction: column;
+      .content-item{
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 0 10px 10px;
+        width: 100%;
+        .img{
+          display: flex;
+          border-radius: 15px;
+          overflow: hidden;
+          width: 100px;
+          min-width: 100px;
+          height: 100px;
+          margin-right: 10px;
+          img{
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+          }
+        }
+        .info{
+          width: calc(100% - 120px);
+          .name{
+            font-family: MontserratBold, sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            color: #1C1C1C;
+            margin-bottom: 5px;
+            max-width: 90%;
+          }
+          .description{
+            color: rgba(0, 0, 0, 0.62);
+            font-size: 12px;
+            margin-bottom: auto;
+          }
+          .count{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 30px;
+            .gram{
+              color: #1C1C1C;
+            }
+            .count-item{
+              color: #1C1C1C;
+            }
+            .price{
+              font-family: MontserratBold, sans-serif;
+              color: #1C1C1C;
+              font-weight: bold;
+            }
+          }
+        }
+        .comment{
+          width: 100%;
+          font-size: 14px;
+          font-style: italic;
+          color: #1C1C1C;
+          margin-top: 15px;
+        }
+      }
+    }
+    .bottom-panel{
+      width: 100%;
+      padding: 15px 10px;
+      background: #FFA800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 15px;
+      border-radius: 0 0 15px 15px;
+      cursor: pointer;
     }
   }
 }

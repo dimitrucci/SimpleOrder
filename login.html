@@ -12,14 +12,14 @@
     <div class="registration">
         <div class="logo">
             <img src="./img/logo.svg" alt="">
-            <form action="" class="form log">
+            <form class="form log">
                 <div class="input-item">
-                    <input type="email" placeholder="Email" autocomplete="off">
+                    <input type="email" placeholder="Email" autocomplete="off" id="login">
                 </div>
                 <div class="input-item">
-                    <input type="password" placeholder="Password" autocomplete="off">
+                    <input type="password" placeholder="Password" autocomplete="off" id="password">
                 </div>
-                <button type="submit" class="btn-login">
+                <button type="submit" class="btn-login" id="btnLogin">
                     Next
                 </button>
                 <a href="login-restaurant.html" class="text">
@@ -33,5 +33,31 @@
     </div>
 </div>
 
+<script src="js/jquery.min.js"></script>
+<script>
+    $(function () {
+        let btnLogin = $('#btnLogin');
+        let password = $('#password');
+        let login = $('#login');
+
+        btnLogin.on('click', function (e) {
+            e.preventDefault();
+            let obj = {
+                login : login.val(),
+                password: password.val()
+            };
+            console.log(obj);
+
+            $.ajax({
+                url: 'url',
+                type: "POST",
+                obj: obj,
+                success: function(data){
+                    console.log(data)
+                }
+            })
+        })
+    })
+</script>
 </body>
 </html>
